@@ -13,7 +13,7 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ('username', 'email', 'name', 'role')
     search_fields = ('username', 'email', 'name', 'role')
     list_filter = ('role',)
-    fields = ('id', 'username', 'email', "phone", 'name', 'display_photo', 'photo', 'role',)
+    fields = ('id', 'username', 'email', "phone", 'name', 'display_photo', 'photo', 'role', 'can_see_all_tasks')
     readonly_fields = ('id', 'role', 'display_photo')
 
     def display_photo(self, obj):
@@ -21,6 +21,5 @@ class UserAdmin(admin.ModelAdmin):
         if profile_photo:
             return mark_safe(f'<img src="{profile_photo.url}" width="50" height="50" />')
         return "No profile_photo"
-
 
     display_photo.short_description = "Display profile photo"
