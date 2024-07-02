@@ -4,8 +4,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.formfields import PhoneNumberField
-
-from . import managers
+from django.contrib.auth.base_user import BaseUserManager
 
 
 # Create your models here.
@@ -18,7 +17,7 @@ class User(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(_("name of User"), max_length=255)
     email = models.EmailField(_("email address"))
-    phone = PhoneNumberField(_("phone number"))
+    phone = PhoneNumberField()
     photo = models.ImageField(_("photo"), upload_to="users")
 
     role = models.CharField(max_length=20, choices=Role)
@@ -27,23 +26,35 @@ class User(AbstractUser):
     def save(self, *args, **kwargs):
         if not self.pk:
             self.role = self.base_role
-            return super().save(*args, **kwargs)
+        return super().save(*args, **kwargs)
 
     def __str__(self):
         return self.username
 
 
-class Employee(models.Model):
+class EmployeeManager(BaseUserManager):
+    def get_queryset(self, *args, **kwargs):
+        results = super().get_queryset(*args, **kwargs)
+        return results.filter(role=User.Role.EMPLOYEE)
+
+
+class CustomerManager(BaseUserManager):
+    def get_queryset(self, *args, **kwargs):
+        results = super().get_queryset(*args, **kwargs)
+        return results.filter(role=User.Role.CUSTOMER)
+
+
+class Employee(User):
     base_role = User.Role.EMPLOYEE
-    objects = managers.EmployeeManager()
+    objects = EmployeeManager()
 
     class Meta:
         proxy = True
 
 
-class Customer(models.Model):
+class Customer(User):
     base_role = User.Role.CUSTOMER
-    objects = managers.CustomerManager()
+    objects = CustomerManager()
 
     class Meta:
         proxy = True
