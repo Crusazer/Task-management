@@ -3,7 +3,7 @@ import uuid
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from phonenumber_field.formfields import PhoneNumberField
+from phonenumber_field.modelfields import PhoneNumberField
 from django.contrib.auth.base_user import BaseUserManager
 
 
@@ -16,15 +16,15 @@ class User(AbstractUser):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(_("name of User"), max_length=255)
-    email = models.EmailField(_("email address"))
-    phone = PhoneNumberField()
-    photo = models.ImageField(_("photo"), upload_to="users")
+    email = models.EmailField(_("email address"), blank=False, unique=True)
+    phone = PhoneNumberField(null=True, blank=False)
+    photo = models.ImageField(_("photo"), upload_to="users/")
 
     role = models.CharField(max_length=20, choices=Role)
     base_role = Role.ADMIN
 
     def save(self, *args, **kwargs):
-        if not self.pk:
+        if self._state.adding:
             self.role = self.base_role
         return super().save(*args, **kwargs)
 
