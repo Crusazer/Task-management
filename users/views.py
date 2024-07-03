@@ -3,6 +3,7 @@ from rest_framework import viewsets, generics, permissions
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 
+from users.filters import UserRoleFilter
 from users.models import Employee, Customer
 from users.serializers import (
     RegisterEmployeeSerializer,
@@ -24,6 +25,13 @@ class RegisterCustomerView(generics.CreateAPIView):
     queryset = Customer.objects.all()
     serializer_class = RegisterCustomerSerializer
     permission_classes = [permissions.AllowAny]
+
+
+class UserListView(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+    filter_backends = (UserRoleFilter,)
 
 
 class UserDetailView(RetrieveAPIView):
