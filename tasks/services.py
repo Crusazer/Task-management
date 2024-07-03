@@ -12,16 +12,16 @@ class TaskService:
     @staticmethod
     def get_queryset_tasks_for_user(user):
         """
-          Customer can see own tasks or all tasks if he has permission to see all tasks.
-          Employer can see all pending tasks and tasks he has performed or completed.
+          Customer can see only own tasks
+          Employer can see all pending tasks and tasks he has performed or completed or
+            all tasks if he has permission to see all tasks.
         """
         if user.role == User.Role.CUSTOMER:
-            if user.can_see_all_tasks:
-                return Task.objects.all()
-            else:
-                return Task.objects.filter(customer=user)
+            return Task.objects.filter(customer=user)
 
         if user.role == User.Role.EMPLOYEE:
+            if user.can_see_all_tasks:
+                return Task.objects.all()
             return Task.objects.filter(Q(status=Task.Status.PENDING) | Q(employee=user))
 
         if user.role == User.Role.ADMIN:

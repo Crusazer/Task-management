@@ -23,7 +23,7 @@ class User(AbstractUser):
     role = models.CharField(max_length=20, choices=Role)
     base_role = Role.ADMIN
 
-    # only for customer (another way is to create profile for Customer)
+    # only for employee (another way is to create profile for employee)
     can_see_all_tasks = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
