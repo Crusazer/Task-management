@@ -55,7 +55,7 @@ class UpdateTaskView(generics.UpdateAPIView):
     If task pending customer can change title and description.
     Employee can change report if task status is running.
     """
-    queryset = Task.objects.filter(~Q(status=Task.Status.DONE))
+    queryset = Task.objects.all()
     serializer_class = TaskSerializer
     permission_classes = [IsAuthenticated]
 

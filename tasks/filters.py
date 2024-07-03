@@ -13,5 +13,5 @@ class TaskStatusFilter(filters.BaseFilterBackend):
             elif status in ('running', 'in_progress'):
                 return queryset.filter(status=Task.Status.RUNNING)
             elif status in ('finished', 'completed', 'done'):
-                return queryset.filter(status.DONE)
+                return queryset.filter(status=Task.Status.DONE)
         return queryset

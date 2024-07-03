@@ -9,7 +9,6 @@ User = get_user_model()
 
 
 class TaskSerializer(serializers.ModelSerializer):
-    customer = serializers.HiddenField(default=serializers.CurrentUserDefault())
     status = serializers.CharField(source='get_status_display', read_only=True)
 
     class Meta:
@@ -17,14 +16,16 @@ class TaskSerializer(serializers.ModelSerializer):
         fields = '__all__'
         extra_kwargs = {
             'customer': {'read_only': True},
-            'report': {'read_only': True},
             'employee': {'read_only': True},
             'date_completed': {'read_only': True},
         }
 
+    def create(self, validated_data):
+        validated_data['customer'] = self.context['request'].user
+        return Task.objects.create(**validated_data)
+
     def update(self, instance, validated_data):
-        user = self.context['request'].user
-        return TaskService.update_task(user, instance, validated_data)
+        return TaskService.update_task(self.context['request'].user, instance, validated_data)
 
 
 class FinishTaskSerializer(serializers.Serializer):
