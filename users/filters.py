@@ -13,7 +13,8 @@ class UserRoleFilter(filters.BaseFilterBackend):
             role = role.lower()
             if role == 'employee':
                 return queryset.filter(role=User.Role.EMPLOYEE)
-            elif role in 'customer':
+            elif role == 'customer':
                 return queryset.filter(role=User.Role.CUSTOMER)
+            return queryset.none()
 
         return queryset

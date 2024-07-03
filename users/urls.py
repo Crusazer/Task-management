@@ -15,6 +15,6 @@ urlpatterns = [
 
     # user info
     path('current-user/', CurrentUserView.as_view(), name='current-user'),
-    path('<uuid:pk>/', UserDetailView.as_view(), name='employee-detail'),
+    path('<uuid:pk>/', UserDetailView.as_view(), name='user-detail'),
     path('all/', UserListView.as_view(), name='user-list'),
 ]
