@@ -6,7 +6,7 @@ from tasks.models import Task
 # Register your models here.
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'status')
+    list_display = ('title', 'status', 'id')
     list_filter = ('status',)
     search_fields = ('id', 'title')
     fields = ('id',

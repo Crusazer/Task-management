@@ -28,14 +28,15 @@ class RegisterEmployeeSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         token = RefreshToken.for_user(instance)
         return {
-            'refresh': str(token),
             'access': str(token.access_token),
+            'refresh': str(token),
         }
 
 
 class RegisterCustomerSerializer(serializers.ModelSerializer):
     phone = PhoneNumberField(required=True)
-    photo = serializers.ImageField(required=True)
+    photo = serializers.ImageField(required=False)
+
 
     class Meta:
         model = Customer

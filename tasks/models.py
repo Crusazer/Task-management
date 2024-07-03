@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 from users.models import Customer, Employee
 from django.utils.translation import gettext_lazy as _
@@ -8,7 +9,7 @@ from django.utils.translation import gettext_lazy as _
 class Task(models.Model):
     class Status(models.TextChoices):
         PENDING = 'P', _('Pending')
-        IN_PROGRESS = 'I', _('In Progress')
+        RUNNING = 'R', _('Running')
         DONE = 'D', _('Done')
 
     title = models.CharField(max_length=255, verbose_name=_('Title'))
@@ -39,6 +40,10 @@ class Task(models.Model):
             raise ValueError('Report must be provided for completed tasks.')
         if self.status == Task.Status.DONE and not self.date_completed:
             raise ValueError('Date completed must be provided for completed tasks.')
+        if self.pk:
+            previous_task = Task.objects.get(pk=self.pk)
+            if previous_task.status == Task.Status.DONE:
+                raise ValueError('Cannot change a completed task.')
         super().save(*args, **kwargs)
 
     def __str__(self):

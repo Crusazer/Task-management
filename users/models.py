@@ -32,7 +32,7 @@ class User(AbstractUser):
         return super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.username
+        return self.name
 
 
 class EmployeeManager(BaseUserManager):
